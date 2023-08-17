@@ -17,9 +17,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 program:  .reg 'infoline'
-version:  .reg '2.0.0'
-ver_id:   .equ $02_00_00_00
-date:     .reg '2023-06-04'
+version:  .reg '2.0.1'
+ver_id:   .equ $02_00_01_00
+date:     .reg '2023-08-18'
 author:   .reg 'TcbnErik'
 
 
@@ -531,9 +531,10 @@ GETDATE_FROM_RTC: .macro
 ;in a0.l RTC_MODE
 ;out d0.l 日付データ $0w_yy_mm_dd
 getdate_read:
-  lea (RTC_10YEAR+1-RTC_MODE,a1),a0
   moveq #$f,d0
-  and (RTC_DAY+1-RTC_MODE,a1),d0
+  and.b (RTC_DAY-RTC_MODE,a1),d0  ;曜日
+
+  lea (RTC_10YEAR+1-RTC_MODE,a1),a0  ;-(a0)で読んでいくので+1しておく
   .rept 2
     lsl #4,d0
     moveq #$f,d1
